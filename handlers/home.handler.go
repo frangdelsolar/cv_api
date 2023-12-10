@@ -1,8 +1,9 @@
 package handlers
 
 import (
-
-	// userService "cv_api/services/user.service"
+	m "cv_api/models"
+	"cv_api/services"
+	"fmt"
 
 	"net/http"
 )
@@ -12,24 +13,34 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	//create User
+	us := services.NewUserDB()
+	user, err := us.GetById(1)
+	fmt.Println(user, err)
 
-	// userService.Create(m.User{
-	// 	Name:  "Frank",
-	// 	Email: "frank@micorreo.com",
-	// })
+	newUser := m.User{
+		Name:  "Frank",
+		Email: "franhhk@micorreo.com",
+	}
+	createdUser, _, _ := us.Create(&newUser)
 
 	// create DD
-	// uid, _ := primitive.ObjectIDFromHex("6574dfde80cf7f1d96288931")
-	// ddService.Create(m.DisplayData{
-	// 	CreatedBy:  uid,
-	// 	CreatedAt:  time.Now(),
-	// 	UpdatedAt:  time.Time{},
-	// 	FirstName:  "Frank",
-	// 	LastName:   "Gonzalez",
-	// 	Email:      "d@f.com",
-	// 	Phone:      "5491122223333",
-	// 	City:       "Mendoza",
-	// 	Country:    "Argentina",
-	// 	ProfilePic: uid,
-	// })
+	newDD := m.DisplayData{
+		Model: m.Model{
+			CreatedByID: int(createdUser.ID),
+		},
+		FirstName:  "Frank",
+		LastName:   "Gonzalez",
+		Email:      "d@f.com",
+		Phone:      "5491122223333",
+		City:       "Mendoza",
+		Country:    "Argentina",
+		ProfilePic: "2",
+	}
+
+	dds := services.NewDisplayDataDB()
+
+	one, two, three := dds.Create(&newDD)
+
+	fmt.Println(one, two, three)
+
 }

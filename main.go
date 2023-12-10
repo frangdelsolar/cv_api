@@ -1,25 +1,35 @@
 package main
 
 import (
+	"cv_api/database"
 	"cv_api/handlers"
-	displayData_handler "cv_api/handlers/displayData.handler"
 	"cv_api/initializers"
 	"net/http"
+
+	"github.com/rs/cors"
+	"gorm.io/gorm"
 
 	"github.com/gorilla/mux"
 )
 
+var DB *gorm.DB
+
 func init() {
 	initializers.LoadEnv()
+	DB = database.ConnectDB()
 }
 
 func main() {
+
 	r := mux.NewRouter()
+
 	r.HandleFunc("/", handlers.HomeHandler)
-	r.HandleFunc("/api/display-data/", displayData_handler.GetDisplayData)
+	r.HandleFunc("/api/display-data/", handlers.GetDisplayData)
 
 	http.Handle("/", r)
 
-	http.ListenAndServe(":8080", nil)
+	handler := cors.AllowAll().Handler(r)
+
+	http.ListenAndServe(":8080", handler)
 
 }

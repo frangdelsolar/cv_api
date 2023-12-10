@@ -1,16 +1,22 @@
-package displayData_handler
+package handlers
 
 import (
-	ddService "cv_api/services/displayData.service"
+	"cv_api/services"
 	"encoding/json"
 	"net/http"
 )
 
-const userId = "6574dfde80cf7f1d96288931"
-
 func GetDisplayData(w http.ResponseWriter, r *http.Request) {
 
-	dd, err := ddService.Read(userId)
+	dds := services.NewDisplayDataDB()
+
+	us := services.NewUserDB()
+	user, err := us.GetFirst()
+	if err != nil {
+		w.Write([]byte(err.Error()))
+	}
+
+	data, err := dds.GetByUserId(int(user.ID))
 
 	if err != nil {
 		w.Write([]byte(err.Error()))
@@ -19,7 +25,7 @@ func GetDisplayData(w http.ResponseWriter, r *http.Request) {
 	// Encode the dd object to JSON and write it to the response
 	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
-	err = encoder.Encode(dd)
+	err = encoder.Encode(data)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return
