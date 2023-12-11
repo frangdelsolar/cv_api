@@ -24,7 +24,10 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", handlers.HomeHandler)
-	r.HandleFunc("/api/display-data/", handlers.GetDisplayData)
+	r.HandleFunc("/api/display-data/", handlers.GetDisplayData).Methods("GET")
+	r.HandleFunc("/api/display-data/", handlers.CreateDisplayData).Methods("POST")
+	r.HandleFunc("/api/display-data/{id}/", handlers.DeleteDisplayData).Methods("DELETE")
+	r.HandleFunc("/api/display-data/{id}/", handlers.UpdateDisplayData).Methods("PUT")
 
 	http.Handle("/", r)
 

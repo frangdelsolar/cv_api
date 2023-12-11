@@ -53,3 +53,10 @@ func (ddb *DisplayDataDB) Update(newDD *m.DisplayData) (bool, error) {
 
 	return true, nil
 }
+
+func (ddb *DisplayDataDB) Delete(id int) (bool, error) {
+	if err := ddb.db.Delete(&m.DisplayData{}, id).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
